@@ -7,9 +7,11 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  if (err) {
+  if (err.code) {
     res.status(err.code).json({ success: false, msg: err.message });
   }
+
+  res.json({ success: false, msg: err.message });
 };
 
 export default errorHandler;

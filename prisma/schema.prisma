@@ -12,9 +12,49 @@ datasource db {
 
 model User {
   id    Int     @id @default(autoincrement())
-  email String  @unique
   name  String?
+  emailId Int @unique
+  email Users_email @relation(fields: [emailId], references: [id])
+  roleId Int 
+  role Role @relation(fields: [roleId], references: [id])
   posts Post[]
+  account Account?
+  account_token Account_token?
+}
+
+model Users_email {
+  id    Int     @id @default(autoincrement())
+  email String 
+  emailVerified Boolean
+  provider String
+  user User?
+}
+
+
+
+model Role {
+  id Int  @id @default(autoincrement())
+  role String
+  user User[]
+}
+
+model Account {
+    id    Int     @id @default(autoincrement())
+    username String
+    provider String
+    userId Int @unique
+    user User @relation(fields: [userId], references: [id])
+    tokenId Int @unique
+    token Account_token @relation(fields: [tokenId], references: [id])
+}
+
+model Account_token {
+    id    Int     @id @default(autoincrement())
+    token String @unique
+    token_type String
+    account Account?
+    userId Int @unique
+    user User @relation(fields: [userId], references: [id])
 }
 
 model Post {
@@ -25,3 +65,4 @@ model Post {
   author    User    @relation(fields: [authorId], references: [id])
   authorId  Int
 }
+

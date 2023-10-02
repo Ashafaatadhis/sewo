@@ -4,10 +4,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const auth_1 = __importDefault(require("./auth"));
+const google_1 = __importDefault(require("./google"));
+const github_1 = __importDefault(require("./github"));
 const router = express_1.default.Router();
 router.get("/", (req, res) => {
-    res.send({ msg: "tfeds" });
+    res.json({ msg: "woi" });
 });
-router.use("/auth", auth_1.default);
+router.use("/google", google_1.default);
+router.use("/github", github_1.default);
 exports.default = router;
