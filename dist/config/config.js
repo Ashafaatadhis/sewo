@@ -19,6 +19,8 @@ const envVarsSchema = joi_1.default
     GITHUB_CLIENT_ID: joi_1.default.string().required(),
     GITHUB_CLIENT_SECRET: joi_1.default.string().required(),
     JWT_SECRET: joi_1.default.string().required(),
+    REFRESH_TOKEN_COOKIE_NAME: joi_1.default.string().required(),
+    CLIENT_REDIRECT: joi_1.default.string().required(),
 })
     .unknown();
 const { value: envVars, error } = envVarsSchema
@@ -42,5 +44,11 @@ exports.default = {
     },
     jwt: {
         secret: envVars.JWT_SECRET,
+    },
+    redirect: envVars.CLIENT_REDIRECT,
+    cookie: {
+        refreshToken: {
+            name: envVars.REFRESH_TOKEN_COOKIE_NAME,
+        },
     },
 };

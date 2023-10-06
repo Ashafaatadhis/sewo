@@ -12,14 +12,15 @@ datasource db {
 
 model User {
   id    Int     @id @default(autoincrement())
-  name  String?
+  username  String
+  password String
+  image String
   emailId Int @unique
   email Users_email @relation(fields: [emailId], references: [id])
   roleId Int 
   role Role @relation(fields: [roleId], references: [id])
   posts Post[]
-  account Account?
-  account_token Account_token?
+  token Account_token?
 }
 
 model Users_email {
@@ -38,23 +39,15 @@ model Role {
   user User[]
 }
 
-model Account {
-    id    Int     @id @default(autoincrement())
-    username String
-    provider String
-    userId Int @unique
-    user User @relation(fields: [userId], references: [id])
-    tokenId Int @unique
-    token Account_token @relation(fields: [tokenId], references: [id])
-}
+ 
 
 model Account_token {
     id    Int     @id @default(autoincrement())
     token String @unique
     token_type String
-    account Account?
     userId Int @unique
     user User @relation(fields: [userId], references: [id])
+ 
 }
 
 model Post {
