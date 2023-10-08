@@ -20,7 +20,7 @@ model User {
   roleId Int 
   role Role @relation(fields: [roleId], references: [id])
   posts Post[]
-  token Account_token?
+  token Account_token[]
 }
 
 model Users_email {
@@ -45,7 +45,7 @@ model Account_token {
     id    Int     @id @default(autoincrement())
     token String @unique
     token_type String
-    userId Int @unique
+    userId Int 
     user User @relation(fields: [userId], references: [id])
  
 }

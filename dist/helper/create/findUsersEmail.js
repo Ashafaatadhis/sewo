@@ -21,7 +21,7 @@ exports.default = (user) => __awaiter(void 0, void 0, void 0, function* () {
                 provider: user.provider,
             },
         },
-        select: {
+        include: {
             user: {
                 select: {
                     id: true,

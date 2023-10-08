@@ -8,7 +8,7 @@ export default async (user: findUsersEmailType) => {
         provider: user.provider,
       },
     },
-    select: {
+    include: {
       user: {
         select: {
           id: true,

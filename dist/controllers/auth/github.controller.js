@@ -57,7 +57,12 @@ const callback = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
                     emailId: email.id,
                 },
             });
-            // const accessToken = accessTokenSign(userAccount.id);
+            // const accessToken = accessTokenSign(userAccount.i
+            yield configPrisma_1.default.account_token.deleteMany({
+                where: {
+                    userId: userAccount.id,
+                },
+            });
             const refreshToken = (0, jwt_1.refreshTokenSign)(userAccount.id);
             yield configPrisma_1.default.account_token.create({
                 data: {
@@ -79,30 +84,17 @@ const callback = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
         }
         //   =======================
         //   end of else
-        const getOldToken = yield configPrisma_1.default.account_token.findFirst({
+        yield configPrisma_1.default.account_token.deleteMany({
             where: {
-                user: {
-                    email: {
-                        AND: {
-                            email: user.email,
-                            provider: user.provider,
-                        },
-                    },
-                },
+                userId: isExist.id,
             },
         });
         const refreshToken = (0, jwt_1.refreshTokenSign)(isExist.user.id);
-        yield configPrisma_1.default.account_token.upsert({
-            where: {
-                token: getOldToken === null || getOldToken === void 0 ? void 0 : getOldToken.token,
-            },
-            update: {
+        yield configPrisma_1.default.account_token.create({
+            data: {
                 token: refreshToken,
-            },
-            create: {
-                token: refreshToken,
-                token_type: "Bearer",
                 userId: isExist.user.id,
+                token_type: "Bearer",
             },
         });
         if (cookies[config_1.default.cookie.refreshToken.name]) {

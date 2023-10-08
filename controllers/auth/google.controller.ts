@@ -53,6 +53,12 @@ const callback = async (req: Request, res: Response, next: NextFunction) => {
 
       // const accessToken = accessTokenSign(userAccount.id);
       const refreshToken = refreshTokenSign(userAccount.id);
+
+      await prisma.account_token.deleteMany({
+        where: {
+          userId: userAccount.id,
+        },
+      });
       await prisma.account_token.create({
         data: {
           token: refreshToken,
@@ -83,29 +89,20 @@ const callback = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     //   =======================
-    //   end of else
+    //   end of elsea
 
-    const getOldToken = await prisma.account_token.findFirst({
+    await prisma.account_token.deleteMany({
       where: {
-        user: {
-          email: {
-            AND: {
-              email: user.email,
-              provider: user.provider,
-            },
-          },
-        },
+        userId: isExist.id,
       },
     });
 
     const refreshToken = refreshTokenSign(isExist.user.id);
-    await prisma.account_token.update({
-      where: {
-        token: getOldToken?.token,
-      },
-
+    await prisma.account_token.create({
       data: {
         token: refreshToken,
+        userId: isExist.user.id,
+        token_type: "Bearer",
       },
     });
 
