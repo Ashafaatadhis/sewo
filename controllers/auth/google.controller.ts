@@ -1,21 +1,24 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import findUsersEmail from "../../helper/create/findUsersEmail";
 import HttpError from "../../utils/errors/HttpError";
-import { accessTokenSign, refreshTokenSign } from "../../utils/jwt";
+import { refreshTokenSign } from "../../utils/jwt";
 import bcrypt from "../../utils/bcrypt";
 import {
   clearRefreshTokenConfig,
   refreshTokenConfig,
 } from "../../config/configCookie";
+import { StatusCodes, ReasonPhrases } from "http-status-codes";
 import config from "../../config/config";
 import generateRandomString from "../../utils/generateRandomValues";
 import prisma from "../../config/configPrisma";
 
-const callback = async (req: Request, res: Response) => {
+const callback = async (req: Request, res: Response, next: NextFunction) => {
   const cookies = req.cookies;
 
   if (!req.user) {
-    return res.json({ msg: "error" });
+    return next(
+      new HttpError(StatusCodes.UNAUTHORIZED, ReasonPhrases.UNAUTHORIZED)
+    );
   }
   const userType: any = req.user;
   const user = {
@@ -95,21 +98,14 @@ const callback = async (req: Request, res: Response) => {
       },
     });
 
-    // const accessToken = accessTokenSign(isExist.user.id);
     const refreshToken = refreshTokenSign(isExist.user.id);
-    await prisma.account_token.upsert({
+    await prisma.account_token.update({
       where: {
         token: getOldToken?.token,
       },
 
-      update: {
+      data: {
         token: refreshToken,
-      },
-
-      create: {
-        token: refreshToken,
-        token_type: "Bearer",
-        userId: isExist.user.id,
       },
     });
 

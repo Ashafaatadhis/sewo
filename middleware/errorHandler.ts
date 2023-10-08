@@ -8,10 +8,10 @@ const errorHandler = (
   next: NextFunction
 ) => {
   if (err.code) {
-    res.status(err.code).json({ success: false, msg: err.message });
+    return res.status(err.code).json({ success: false, msg: err.message });
   }
 
-  res.json({ success: false, msg: err.message });
+  return res.json({ success: false, msg: err.message });
 };
 
 export default errorHandler;

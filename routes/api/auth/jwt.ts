@@ -1,10 +1,13 @@
 import express from "express";
-import passport from "../../../middleware/auth";
+import {
+  jwtRefresh,
+  jwtSignup,
+} from "../../../controllers/auth/jwt.controller";
 
 const router = express.Router();
 
 router.get("/signin");
-router.get("/signup");
-router.get("/refresh");
+router.post("/signup", jwtSignup);
+router.get("/refresh", jwtRefresh);
 
 export default router;

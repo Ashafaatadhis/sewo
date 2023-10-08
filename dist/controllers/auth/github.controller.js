@@ -19,10 +19,14 @@ const jwt_1 = require("../../utils/jwt");
 const bcrypt_1 = __importDefault(require("../../utils/bcrypt"));
 const config_1 = __importDefault(require("../../config/config"));
 const configCookie_1 = require("../../config/configCookie");
+const http_status_codes_1 = require("http-status-codes");
 const configPrisma_1 = __importDefault(require("../../config/configPrisma"));
 const generateRandomValues_1 = __importDefault(require("../../utils/generateRandomValues"));
-const callback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const callback = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const cookies = req.cookies;
+    if (!req.user) {
+        return next(new HttpError_1.default(http_status_codes_1.StatusCodes.UNAUTHORIZED, http_status_codes_1.ReasonPhrases.UNAUTHORIZED));
+    }
     const userType = req.user;
     const user = {
         displayName: userType.displayName,
@@ -87,7 +91,6 @@ const callback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 },
             },
         });
-        const accessToken = (0, jwt_1.accessTokenSign)(isExist.user.id);
         const refreshToken = (0, jwt_1.refreshTokenSign)(isExist.user.id);
         yield configPrisma_1.default.account_token.upsert({
             where: {

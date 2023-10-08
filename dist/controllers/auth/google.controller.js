@@ -18,13 +18,14 @@ const HttpError_1 = __importDefault(require("../../utils/errors/HttpError"));
 const jwt_1 = require("../../utils/jwt");
 const bcrypt_1 = __importDefault(require("../../utils/bcrypt"));
 const configCookie_1 = require("../../config/configCookie");
+const http_status_codes_1 = require("http-status-codes");
 const config_1 = __importDefault(require("../../config/config"));
 const generateRandomValues_1 = __importDefault(require("../../utils/generateRandomValues"));
 const configPrisma_1 = __importDefault(require("../../config/configPrisma"));
-const callback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const callback = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const cookies = req.cookies;
     if (!req.user) {
-        return res.json({ msg: "error" });
+        return next(new HttpError_1.default(http_status_codes_1.StatusCodes.UNAUTHORIZED, http_status_codes_1.ReasonPhrases.UNAUTHORIZED));
     }
     const userType = req.user;
     const user = {
@@ -88,19 +89,13 @@ const callback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 },
             },
         });
-        // const accessToken = accessTokenSign(isExist.user.id);
         const refreshToken = (0, jwt_1.refreshTokenSign)(isExist.user.id);
-        yield configPrisma_1.default.account_token.upsert({
+        yield configPrisma_1.default.account_token.update({
             where: {
                 token: getOldToken === null || getOldToken === void 0 ? void 0 : getOldToken.token,
             },
-            update: {
+            data: {
                 token: refreshToken,
-            },
-            create: {
-                token: refreshToken,
-                token_type: "Bearer",
-                userId: isExist.user.id,
             },
         });
         if (cookies[config_1.default.cookie.refreshToken.name]) {
