@@ -1,9 +1,9 @@
 type findUsers = {
-  displayName: string;
-  name: string;
-  image: string;
+  displayName?: string;
+  name?: string;
+  image?: string;
   email: string;
-  emailVerified: boolean;
+  emailVerified?: boolean;
   provider: string;
 };
 

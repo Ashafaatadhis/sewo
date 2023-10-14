@@ -1,7 +1,7 @@
 type bodyUser = {
-  displayName: string;
-  name: string;
-  image: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
   email: string;
 };
 
